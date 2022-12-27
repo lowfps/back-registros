@@ -10,8 +10,8 @@ class DocumentosController extends ManagerDB {
     }
 
     public createDocumentos(req: Request, res: Response): Promise<any> {
-        const query: string = 'INSERT INTO documentos(id_documentos, doc_maestro, documento1, documento2, documento3) VALUES($1, $2, $3, $4, $5)';
-        const parameters = [req.body.id_documentos, req.body.doc_maestro, req.body.documento1, req.body.documento2, req.body.documento3];
+        const query: string = 'INSERT INTO documentos(id_documentos, doc_maestro) VALUES($1, $2)';
+        const parameters = [req.body.id_documentos, req.body.doc_maestro];
         return DocumentosController.executeQuery(query, parameters, res, 'INSERT');
     }
 
