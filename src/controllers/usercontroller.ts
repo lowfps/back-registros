@@ -48,7 +48,7 @@ class UserController extends ManagerDB {
         return UserController.executeQuery(query, values, res, 'SELECT');
     }
 
-    async function login(correo_usuario: string, clave_usuario: string, res: Response): Promise<boolean> {
+    public async login(correo_usuario: string, clave_usuario: string, res: Response): Promise<boolean> {
 
 
     // Consulta la base de datos para obtener el usuario con el correo especificado
