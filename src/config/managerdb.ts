@@ -3,12 +3,19 @@ import pool from './connectiondb';
 import jwt from 'jsonwebtoken';
 
 class ManagerDB {
-    protected static async executeQuery(sql: string, parameters: any, res: Response, type: string): Promise < any > {
+    protected static async executeQuery(sql: string, parameters: any, res: Response, type: string, auth?: boolean): Promise < any > {
         //? pool.query(sql, parameters).then(out => {
         pool.result(sql, parameters).then(out => {
             switch (type.toUpperCase()) {
                 case 'SELECT':
+                  if( auth ) {
+                    const tokenLogin = jwt.sign({'correo_usuario': parameters }, 'privatekey');
+                    res.status(200).json({'token': tokenLogin, 'user': out.rows });
+
+                  }
+                  else {
                     res.status(200).json(out.rows);
+                  }
                     break;
                 case 'INSERT':
                     res.status(200).json({ 'mensaje': 'Registro creado', 'id': out.rows });
@@ -25,7 +32,7 @@ class ManagerDB {
                     break;
                 case 'INSERT-USER':
                     const token = jwt.sign({ 'cod_usuario': out, 'correo_usuario': parameters.correo_usuario }, 'privatekey');
-                    res.status(200).json({ 'token': token });
+                    res.status(200).json({ 'token': token, 'user': parameters[1] });
                     break;
                 default:
                     res.status(400).json({ 'answer': 'Service not implemented <--' });

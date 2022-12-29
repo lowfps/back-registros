@@ -13,8 +13,8 @@ class UserController extends ManagerDB {
     public createUser(req: Request, res: Response): Promise<any> {
         //! delete req.body.token;
         const data = bcrypt.hashSync(req.body.clave_usuario, 10);
-        const query: string = 'INSERT INTO usuario(cod_usuario, cod_rol, nombre_usuario, correo_usuario, clave_usuario) VALUES($1, $2, $3, $4, $5)';
-        const parameters = [req.body.cod_usuario, req.body.cod_rol, req.body.nombre_usuario, req.body.correo_usuario, data];
+        const query: string = 'INSERT INTO usuario(cod_rol, nombre_usuario, correo_usuario, clave_usuario) VALUES($1, $2, $3, $4)';
+        const parameters = [req.body.cod_rol, req.body.nombre_usuario, req.body.correo_usuario, data];
         // return UserController.executeQuery(query, parameters, res, 'INSERT');
         return UserController.executeQuery(query, parameters, res, 'INSERT-USER');
     }
@@ -41,18 +41,21 @@ class UserController extends ManagerDB {
     public findUserByEmail(correo_usuario: string, res: Response): Promise<any> {
         const query = `
           SELECT *
-          FROM users
-          WHERE email = $1
+          FROM usuario
+          WHERE correo_usuario = $1
         `;
         const values = [correo_usuario];
-        return UserController.executeQuery(query, values, res, 'SELECT');
+        let auth = true
+        
+        return UserController.executeQuery(query, values, res, 'SELECT', auth);
     }
 
-    public async login(correo_usuario: string, clave_usuario: string, res: Response): Promise<boolean> {
+    public async login(req: Request, res: Response): Promise<boolean> {
 
+      console.log(req.body);
 
     // Consulta la base de datos para obtener el usuario con el correo especificado
-    const user = await userController.findUserByEmail(correo_usuario, res);
+    const user = await userController.findUserByEmail(req.body.correo_usuario, res);
 
 
     // Si el usuario no existe, devuelve falso
@@ -63,7 +66,7 @@ class UserController extends ManagerDB {
 
     // Compara la contraseña proporcionada con el hash de la contraseña del usuario en la base de datos
     //const passwordIsValid = bcrypt.compare(clave_usuario, user.clave_usuario);
-    const passwordIsValid = bcrypt.compare(clave_usuario, user.passwordHash);
+    const passwordIsValid = bcrypt.compare(req.body.clave_usuario, user.passwordHash);
 
     // Si las contraseñas coinciden, devuelve verdadero
     // Si no coinciden, devuelve falso
