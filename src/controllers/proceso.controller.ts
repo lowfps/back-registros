@@ -10,8 +10,8 @@ class ProcesoController extends ManagerDB {
     }
 
     public createProceso(req: Request, res: Response): Promise<any> {
-        const query: string = 'INSERT INTO proceso(id_proceso, id_estado_proceso, id_recurso, fecha_inicio, fecha_fin, detalle_proceso) VALUES($1, $2, $3, $4, $5, $6)';
-        const parameters = [req.body.id_proceso, req.body.id_estado_proceso, req.body.id_recurso, req.body.fecha_inicio, req.body.fecha_fin, req.body.detalle_proceso];
+        const query: string = 'INSERT INTO proceso(cod_programa, fechainicio_proceso, fechafin_proceso, detalle_proceso) VALUES($1, $2, $3, $4)';
+        const parameters = [req.body.cod_programa, req.body.fechainicio_proceso, req.body.fechafin_proceso, req.body.detalle_proceso];
         return ProcesoController.executeQuery(query, parameters, res, 'INSERT');
     }
 

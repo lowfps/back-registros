@@ -5,13 +5,13 @@ class DocumentosController extends ManagerDB {
 
     public getDocumentos(req: Request, res: Response): Promise<any> {
         // const query: string = 'SELECT codrol, namerol FROM rol';
-        const query: string = 'SELECT * FROM documentos';
+        const query: string = 'SELECT * FROM recurso';
         return DocumentosController.executeQuery(query, req, res, 'SELECT');
     }
 
     public createDocumentos(req: Request, res: Response): Promise<any> {
-        const query: string = 'INSERT INTO documentos(id_documentos, doc_maestro) VALUES($1, $2)';
-        const parameters = [req.body.id_documentos, req.body.doc_maestro];
+        const query: string = 'INSERT INTO recurso(cod_proceso, nombrepublico_recurso, nombreprivado_recurso, tamanno, tipo_recurso) VALUES($1, $2, $3, $4, $5)';
+        const parameters = [req.body.cod_proceso, req.body.nombrepublico_recurso, req.body.nombreprivado_recurso, req.body.tamanno, req.body.tipo_recurso];
         return DocumentosController.executeQuery(query, parameters, res, 'INSERT');
     }
 
