@@ -10,6 +10,7 @@ import usuarioRoutes from './routes/usuario.routes'
 import documentosRoutes from './routes/documentos.routes';
 import procesoRoutes from './routes/proceso.routes';
 
+import fileUpload from 'express-fileupload';
 
 class Server {
     public app: express.Application;
@@ -29,6 +30,11 @@ class Server {
         this.app.use(express.urlencoded({
             extended: true
         }));
+        this.app.use(fileUpload({
+          useTempFiles: true,
+          tempFileDir: '/tmp/',
+          createParentPath: true
+        }))
     }
 
     public start(): void {
