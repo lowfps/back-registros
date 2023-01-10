@@ -15,13 +15,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const connectiondb_1 = __importDefault(require("./connectiondb"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class ManagerDB {
-    static executeQuery(sql, parameters, res, type) {
+    static executeQuery(sql, parameters, res, type, auth) {
         return __awaiter(this, void 0, void 0, function* () {
             //? pool.query(sql, parameters).then(out => {
             connectiondb_1.default.result(sql, parameters).then(out => {
                 switch (type.toUpperCase()) {
                     case 'SELECT':
-                        res.status(200).json(out.rows);
+                        if (auth) {
+                            const tokenLogin = jsonwebtoken_1.default.sign({ 'correo_usuario': parameters }, 'privatekey');
+                            res.status(200).json({ 'token': tokenLogin, 'user': out.rows });
+                        }
+                        else {
+                            res.status(200).json(out.rows);
+                        }
                         break;
                     case 'INSERT':
                         res.status(200).json({ 'mensaje': 'Registro creado', 'id': out.rows });
@@ -38,7 +44,7 @@ class ManagerDB {
                         break;
                     case 'INSERT-USER':
                         const token = jsonwebtoken_1.default.sign({ 'cod_usuario': out, 'correo_usuario': parameters.correo_usuario }, 'privatekey');
-                        res.status(200).json({ 'token': token });
+                        res.status(200).json({ 'token': token, 'user': parameters[1] });
                         break;
                     default:
                         res.status(400).json({ 'answer': 'Service not implemented <--' });

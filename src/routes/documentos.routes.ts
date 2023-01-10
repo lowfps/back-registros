@@ -12,8 +12,9 @@ class DocumentosRoutes {
 
     public config(): void {
         this.router.get('/', documentosController.getDocumentos);
+        this.router.get('/file/:id_file', documentosController.getDocumentosByFileId);
         this.router.post('/create', documentosController.createDocumentos);
-        this.router.delete('/:id_documentos', documentosController.deleteDocumentos);
+        this.router.delete('/:id_documentos/:id_file', documentosController.deleteDocumentos);
         this.router.put('/update/:id_documentos', documentosController.updateDocumentos);
     }
 }

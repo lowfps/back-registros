@@ -7,7 +7,10 @@ import funcionRoutes from './routes/funcion.routes';
 import programRoutes from './routes/programa_academico.routes';
 import rolRoutes from './routes/rol.routes';
 import usuarioRoutes from './routes/usuario.routes'
+import documentosRoutes from './routes/documentos.routes';
+import procesoRoutes from './routes/proceso.routes';
 
+import fileUpload from 'express-fileupload';
 
 class Server {
     public app: express.Application;
@@ -27,6 +30,11 @@ class Server {
         this.app.use(express.urlencoded({
             extended: true
         }));
+        this.app.use(fileUpload({
+          useTempFiles: true,
+          tempFileDir: '/tmp/',
+          createParentPath: true
+        }))
     }
 
     public start(): void {
@@ -41,6 +49,8 @@ class Server {
         this.app.use('/api/programa', programRoutes);
         this.app.use('/api/rol', rolRoutes);
         this.app.use('/api/usuarios', usuarioRoutes);
+        this.app.use('/api/recurso', documentosRoutes);
+        this.app.use('/api/proceso', procesoRoutes);
 
 
         
