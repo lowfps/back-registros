@@ -15,18 +15,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const managerdb_1 = __importDefault(require("../config/managerdb"));
 const path_1 = __importDefault(require("path"));
 const uuid_1 = require("uuid");
+const fs_1 = __importDefault(require("fs"));
 class DocumentosController extends managerdb_1.default {
     getDocumentos(req, res) {
         // const query: string = 'SELECT codrol, namerol FROM rol';
         const query = 'SELECT * FROM recurso';
         return DocumentosController.executeQuery(query, req, res, 'SELECT');
     }
+    getDocumentosByFileId(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const idFile = req.params.id_file;
+            const pathImage = path_1.default.join(__dirname, `/uploads/${idFile}`);
+            return res.download(pathImage);
+        });
+    }
     createDocumentos(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { file } = req.files;
+                const estado = Number(req.body.estado);
                 const nameFile = yield uploadFile(req.files);
-                console.log(nameFile);
                 let typeFile = '';
                 switch (nameFile.extension) {
                     case 'docx':
@@ -41,8 +49,8 @@ class DocumentosController extends managerdb_1.default {
                     default:
                         break;
                 }
-                const query = 'INSERT INTO recurso(cod_proceso, nombrepublico_recurso, nombreprivado_recurso, tamanno, tipo_recurso) VALUES($1, $2, $3, $4, $5)';
-                const parameters = [req.body.cod_proceso, req.body.nombrepublico_recurso, nameFile.nameTmp, file.size, typeFile];
+                const query = 'INSERT INTO recurso(cod_proceso, nombrepublico_recurso, nombreprivado_recurso, tamanno, tipo_recurso, estado) VALUES($1, $2, $3, $4, $5, $6)';
+                const parameters = [req.body.cod_proceso, req.body.nombrepublico_recurso, nameFile.nameTmp, file.size, typeFile, estado];
                 return DocumentosController.executeQuery(query, parameters, res, 'INSERT');
             }
             catch (msg) {
@@ -52,6 +60,12 @@ class DocumentosController extends managerdb_1.default {
     }
     deleteDocumentos(req, res) {
         if (!isNaN(Number(req.params.id_documentos))) {
+            console.log(req.params.id_file);
+            const idFile = req.params.id_file;
+            const pathImage = path_1.default.join(__dirname, `/uploads/${idFile}`);
+            if (fs_1.default.existsSync(pathImage)) {
+                fs_1.default.unlinkSync(pathImage);
+            }
             const query = 'DELETE FROM recurso WHERE cod_recurso = $1';
             const parameters = [Number(req.params.id_documentos)];
             return DocumentosController.executeQuery(query, parameters, res, 'DELETE');
