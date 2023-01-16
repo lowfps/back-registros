@@ -9,8 +9,10 @@ class DocumentosController extends ManagerDB {
 
     public getDocumentos(req: Request, res: Response): Promise<any> {
         // const query: string = 'SELECT codrol, namerol FROM rol';
-        const query: string = 'SELECT * FROM recurso';
-        return DocumentosController.executeQuery(query, req, res, 'SELECT');
+        const query: string = 'SELECT * FROM recurso WHERE id_user = $1';
+        const parameters = [Number(req.params.id_user)];
+
+        return DocumentosController.executeQuery(query, parameters, res, 'SELECT');
     }
 
     public async getDocumentosByFileId( req: Request, res: Response): Promise<any>{
@@ -22,6 +24,7 @@ class DocumentosController extends ManagerDB {
     public async createDocumentos(req: any, res: Response){
       try {
         const { file } = req.files;
+        const { id_user } = req.params;
         const estado   = Number(req.body.estado);
         const nameFile: any = await uploadFile( req.files );
         let typeFile: any = ''; 
@@ -38,8 +41,8 @@ class DocumentosController extends ManagerDB {
           default:
             break;
         }
-        const query: string = 'INSERT INTO recurso(cod_proceso, nombrepublico_recurso, nombreprivado_recurso, tamanno, tipo_recurso, estado) VALUES($1, $2, $3, $4, $5, $6)';
-        const parameters = [req.body.cod_proceso, req.body.nombrepublico_recurso, nameFile.nameTmp, file.size, typeFile, estado];
+        const query: string = 'INSERT INTO recurso(cod_proceso, nombrepublico_recurso, nombreprivado_recurso, tamanno, tipo_recurso, estado,id_user) VALUES($1, $2, $3, $4, $5, $6, $7)';
+        const parameters = [req.body.cod_proceso, req.body.nombrepublico_recurso, nameFile.nameTmp, file.size, typeFile, estado, id_user ];
         return DocumentosController.executeQuery(query, parameters, res, 'INSERT');
       } catch (msg) {
         return res.status(400).json({ msg })

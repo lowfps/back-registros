@@ -11,9 +11,9 @@ class DocumentosRoutes {
         this.config();
     }
     config() {
-        this.router.get('/', documentos_controller_1.default.getDocumentos);
+        this.router.get('/:id_user', documentos_controller_1.default.getDocumentos);
         this.router.get('/file/:id_file', documentos_controller_1.default.getDocumentosByFileId);
-        this.router.post('/create', documentos_controller_1.default.createDocumentos);
+        this.router.post('/create/:id_user', documentos_controller_1.default.createDocumentos);
         this.router.delete('/:id_documentos/:id_file', documentos_controller_1.default.deleteDocumentos);
         this.router.put('/update/:id_documentos', documentos_controller_1.default.updateDocumentos);
     }

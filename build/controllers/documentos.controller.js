@@ -19,8 +19,9 @@ const fs_1 = __importDefault(require("fs"));
 class DocumentosController extends managerdb_1.default {
     getDocumentos(req, res) {
         // const query: string = 'SELECT codrol, namerol FROM rol';
-        const query = 'SELECT * FROM recurso';
-        return DocumentosController.executeQuery(query, req, res, 'SELECT');
+        const query = 'SELECT * FROM recurso WHERE id_user = $1';
+        const parameters = [Number(req.params.id_user)];
+        return DocumentosController.executeQuery(query, parameters, res, 'SELECT');
     }
     getDocumentosByFileId(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -33,6 +34,7 @@ class DocumentosController extends managerdb_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { file } = req.files;
+                const { id_user } = req.params;
                 const estado = Number(req.body.estado);
                 const nameFile = yield uploadFile(req.files);
                 let typeFile = '';
@@ -49,8 +51,8 @@ class DocumentosController extends managerdb_1.default {
                     default:
                         break;
                 }
-                const query = 'INSERT INTO recurso(cod_proceso, nombrepublico_recurso, nombreprivado_recurso, tamanno, tipo_recurso, estado) VALUES($1, $2, $3, $4, $5, $6)';
-                const parameters = [req.body.cod_proceso, req.body.nombrepublico_recurso, nameFile.nameTmp, file.size, typeFile, estado];
+                const query = 'INSERT INTO recurso(cod_proceso, nombrepublico_recurso, nombreprivado_recurso, tamanno, tipo_recurso, estado,id_user) VALUES($1, $2, $3, $4, $5, $6, $7)';
+                const parameters = [req.body.cod_proceso, req.body.nombrepublico_recurso, nameFile.nameTmp, file.size, typeFile, estado, id_user];
                 return DocumentosController.executeQuery(query, parameters, res, 'INSERT');
             }
             catch (msg) {

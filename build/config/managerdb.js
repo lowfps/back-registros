@@ -44,7 +44,12 @@ class ManagerDB {
                         break;
                     case 'INSERT-USER':
                         const token = jsonwebtoken_1.default.sign({ 'cod_usuario': out, 'correo_usuario': parameters.correo_usuario }, 'privatekey');
-                        res.status(200).json({ 'token': token, 'user': parameters[1] });
+                        const text = 'SELECT * FROM usuario WHERE correo_usuario = $1';
+                        const values = [parameters[2]];
+                        connectiondb_1.default.query(text, values).then(result => {
+                            res.status(200).json({ 'token': token, 'user': parameters[1], 'cod_usuario': result[0].cod_usuario });
+                        })
+                            .catch(e => console.error(e.stack));
                         break;
                     default:
                         res.status(400).json({ 'answer': 'Service not implemented <--' });
