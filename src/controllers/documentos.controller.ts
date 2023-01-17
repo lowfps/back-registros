@@ -65,6 +65,7 @@ class DocumentosController extends ManagerDB {
     }
 
     public updateDocumentos(req: Request, res: Response): Promise<any> {
+      /**falta modificar */
         if (!isNaN(Number(req.params.id_documentos))) {
             delete req.body.id_documentos;
             const query: string = 'UPDATE documentos SET namerol = $2 WHERE codrol = $1';
