@@ -6,7 +6,7 @@ exports.default = {
         host: 'localhost',
         // user: 'user_node',
         user: 'postgres',
-        password: '1234',
+        password: '123456',
         database: 'registros_calificados2',
         port: 5432,
     }
