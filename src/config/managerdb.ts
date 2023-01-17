@@ -31,6 +31,7 @@ class ManagerDB {
                         : res.status(400).json({ 'mensaje': 'Usuario no existe' });
                     break;
                 case 'INSERT-USER':
+                    /**Cambio del user */
                     const token = jwt.sign({ 'cod_usuario': out, 'correo_usuario': parameters.correo_usuario }, 'privatekey');
                     const text = 'SELECT * FROM usuario WHERE correo_usuario = $1';
                     const values = [parameters[2]]
